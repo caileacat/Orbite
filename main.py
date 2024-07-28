@@ -1,14 +1,12 @@
 import os
 import logging
-import discord
-import requests
 from dotenv import load_dotenv
+import discord
 from discord.ext import commands
 from discord import app_commands
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-WEBHOOK_URL = os.getenv('WEBHOOK_URL')
 
 logging.basicConfig(level=logging.INFO)
 
@@ -33,27 +31,6 @@ async def on_ready():
 async def stop(interaction: discord.Interaction):
     await interaction.response.send_message("Orbite's colors fade, then its outline. Everything fades away until all that's left are stars ☆’ﾟ･♪:*:･｡,★’ﾟ･:*:･｡")
     await bot.close()
-
-def send_webhook_message(webhook_url, content):
-    data = {
-        "content": content,
-        "username": "Orbite"
-    }
-    response = requests.post(webhook_url, json=data)
-    if response.status_code != 204:
-        raise Exception(f"Failed to send webhook message: {response.status_code} - {response.text}")
-
-class InitiateCombat(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @app_commands.command(name="begin_combat", description="Starts combat.")
-    async def begin_combat(self, interaction: discord.Interaction):
-        send_webhook_message(WEBHOOK_URL, "!i begin")
-        await interaction.response.send_message("Combat started using webhook.")
-
-async def setup(bot):
-    await bot.add_cog(InitiateCombat(bot))
 
 # Load cogs
 initial_extensions = ['cogs.example_cog', 'cogs.initiate_combat']
